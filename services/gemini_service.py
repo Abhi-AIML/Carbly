@@ -1,9 +1,12 @@
 import os
 import re
 import json
+import logging
 from google import genai
 from google.genai import types
 from dotenv import load_dotenv
+
+logger = logging.getLogger("carbly.gemini")
 
 load_dotenv()
 
@@ -11,6 +14,9 @@ api_key = os.getenv("GEMINI_API_KEY")
 client = None
 if api_key:
     client = genai.Client(api_key=api_key)
+    logger.info("Gemini API client initialized successfully.")
+else:
+    logger.warning("GEMINI_API_KEY not set. AI features will be unavailable.")
 
 SYSTEM_PROMPT = """You are Carbly's onboarding assistant — warm, encouraging, and knowledgeable about carbon emissions. 
 Your job is to collect the user's lifestyle information through natural conversation to calculate their carbon footprint.
@@ -94,9 +100,9 @@ def get_chat_response(history: list, user_message: str, phase: str = "onboarding
                 try:
                     carbly_data = json.loads(match.group(1))
                 except json.JSONDecodeError:
-                    pass # Handled on client side or via next prompt
+                    logger.warning("Failed to parse carbly_data JSON from Gemini response.")
                     
         return reply, data_collected, carbly_data
     except Exception as e:
-        print(f"Gemini API Error: {e}")
+        logger.error("Gemini API Error: %s", e, exc_info=True)
         return "I'm having a little trouble connecting right now. Could you please try again?", False, None
