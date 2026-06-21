@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Carbly - Carbon Footprint Awareness</title>
+    <meta name="description" content="Carbly helps you understand, track, and reduce your personal carbon footprint with an AI-powered conversational coach and interactive dashboard.">
+    <title>Carbly - Carbon Footprint Awareness Platform</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/style.css">
@@ -13,11 +14,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
 </head>
 <body class="text-white antialiased">
+    <a href="#main-content" class="skip-link">Skip to main content</a>
     <div class="aurora"></div>
 
     <div class="app-container" id="app-container" style="display: none;">
         <!-- Sidebar -->
-        <nav class="sidebar">
+        <nav class="sidebar" role="navigation" aria-label="Main navigation">
             <div class="sidebar-top p-6 pb-2">
                 <div class="flex items-center gap-3 mb-2">
                     <svg class="w-8 h-8 text-green-400" viewBox="0 0 24 24" fill="currentColor">
@@ -65,7 +67,7 @@
             </div>
 
             <div class="sidebar-bottom p-6 border-t border-white/10 mt-auto">
-                <div class="glass-card p-3 flex items-center gap-3 cursor-pointer interactive" onclick="openManualEntry()">
+                <button class="glass-card p-3 flex items-center gap-3 cursor-pointer interactive w-full text-left" onclick="openManualEntry()" aria-label="Open manual carbon data entry">
                     <div class="w-8 h-8 rounded-full border-2 border-green-400 flex items-center justify-center text-xs font-bold" id="mini-score-ring">
                         --
                     </div>
@@ -73,31 +75,31 @@
                         <p class="text-xs text-green-100">This Month</p>
                         <p class="text-sm font-bold" id="mini-kg">-- kg CO₂</p>
                     </div>
-                </div>
+                </button>
             </div>
         </nav>
 
         <!-- Main Content Area -->
-        <main class="main-content">
+        <main class="main-content" id="main-content" role="main" aria-label="Dashboard content">
             <!-- Top Stats Bar -->
-            <div class="stats-bar hidden" id="top-stats-bar">
-                <div class="glass-card stat-pill interactive">🔥 <span id="stat-streak">0 Day Streak</span></div>
-                <div class="glass-card stat-pill interactive">🌿 <span id="stat-xp">0 XP</span></div>
-                <div class="glass-card stat-pill interactive" onclick="navTo('achievements')">🏆 <span id="stat-badges">0/12 Badges</span></div>
-                <div class="glass-card stat-pill interactive">📉 <span id="stat-monthly">-- kg this month</span></div>
-                <div class="glass-card stat-pill interactive">🌍 <span id="stat-rating">--% Rating</span></div>
+            <div class="stats-bar hidden" id="top-stats-bar" role="status" aria-label="Quick stats">
+                <div class="glass-card stat-pill interactive" role="status" aria-label="Login streak"><span aria-hidden="true">🔥</span> <span id="stat-streak">0 Day Streak</span></div>
+                <div class="glass-card stat-pill interactive" role="status" aria-label="Experience points"><span aria-hidden="true">🌿</span> <span id="stat-xp">0 XP</span></div>
+                <button class="glass-card stat-pill interactive" onclick="navTo('achievements')" aria-label="View achievements"><span aria-hidden="true">🏆</span> <span id="stat-badges">0/12 Badges</span></button>
+                <div class="glass-card stat-pill interactive" role="status" aria-label="Monthly emissions"><span aria-hidden="true">📉</span> <span id="stat-monthly">-- kg this month</span></div>
+                <div class="glass-card stat-pill interactive" role="status" aria-label="Overall rating"><span aria-hidden="true">🌍</span> <span id="stat-rating">--% Rating</span></div>
             </div>
 
             <!-- Views -->
             <div class="relative w-full h-full">
                 
                 <!-- Dashboard View -->
-                <section id="dashboard-view" class="view-section px-4 md:px-8 pt-6">
+                <section id="dashboard-view" class="view-section px-4 md:px-8 pt-6" aria-label="Dashboard">
                     <div class="max-w-5xl mx-auto">
                         <!-- Hero Row -->
                         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
                             <div class="glass-card p-6 flex flex-col items-center justify-center text-center relative overflow-hidden">
-                                <h3 class="text-lg font-bold mb-4 z-10">Your Earth</h3>
+                                <h2 class="text-lg font-bold mb-4 z-10">Your Earth</h2>
                                 <div id="planet-widget" class="planet-widget mb-4 z-10" style="background: radial-gradient(circle at 30% 30%, #4ade80, #064e3b);"></div>
                                 <p class="text-sm text-green-200 z-10">Keeping it green!</p>
                             </div>
@@ -133,24 +135,24 @@
                         <!-- Breakdown Row -->
                         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
                             <div class="glass-card p-6 lg:col-span-2">
-                                <h3 class="text-lg font-semibold mb-4">Footprint Breakdown</h3>
+                                <h2 class="text-lg font-semibold mb-4">Footprint Breakdown</h2>
                                 <div class="relative h-[250px] w-full flex justify-center">
-                                    <canvas id="categoryChart"></canvas>
+                                    <canvas id="categoryChart" role="img" aria-label="Doughnut chart showing carbon footprint breakdown by category">Your browser does not support the canvas element. Breakdown: Transport, Energy, Food, Digital, Lifestyle.</canvas>
                                 </div>
                             </div>
                             <div class="glass-card p-6">
-                                <h3 class="text-lg font-semibold mb-4">Quick Equivalences</h3>
+                                <h2 class="text-lg font-semibold mb-4">Quick Equivalences</h2>
                                 <div class="flex flex-col gap-4">
-                                    <div class="flex items-center gap-4 bg-black/20 p-3 rounded-xl">
-                                        <span class="text-2xl">🌳</span>
+                                    <div class="flex items-center gap-4 bg-black/20 p-3 rounded-xl" role="listitem">
+                                        <span class="text-2xl" aria-hidden="true">🌳</span>
                                         <div><p class="font-bold text-lg leading-tight" id="eq-trees">--</p><p class="text-xs text-green-200">Trees to offset</p></div>
                                     </div>
-                                    <div class="flex items-center gap-4 bg-black/20 p-3 rounded-xl">
-                                        <span class="text-2xl">✈️</span>
+                                    <div class="flex items-center gap-4 bg-black/20 p-3 rounded-xl" role="listitem">
+                                        <span class="text-2xl" aria-hidden="true">✈️</span>
                                         <div><p class="font-bold text-lg leading-tight" id="eq-flights">--</p><p class="text-xs text-green-200">Domestic flights</p></div>
                                     </div>
-                                    <div class="flex items-center gap-4 bg-black/20 p-3 rounded-xl">
-                                        <span class="text-2xl">📱</span>
+                                    <div class="flex items-center gap-4 bg-black/20 p-3 rounded-xl" role="listitem">
+                                        <span class="text-2xl" aria-hidden="true">📱</span>
                                         <div><p class="font-bold text-lg leading-tight">14,200</p><p class="text-xs text-green-200">Phone charges</p></div>
                                     </div>
                                 </div>
@@ -158,13 +160,13 @@
                         </div>
 
                         <!-- Top Actions -->
-                        <h3 class="text-xl font-bold mb-4">Recommended Actions</h3>
+                        <h2 class="text-xl font-bold mb-4">Recommended Actions</h2>
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8" id="actions-container">
                             <!-- Injected -->
                         </div>
 
                         <!-- Integrations -->
-                        <h3 class="text-xl font-bold mb-4">Connect Data</h3>
+                        <h2 class="text-xl font-bold mb-4">Connect Data</h2>
                         <div class="flex flex-wrap gap-4 mb-8">
                             <button class="glass-card interactive px-4 py-3 flex items-center gap-2 text-sm" onclick="showToast('Coming Soon 🔜')">🍎 Apple Health</button>
                             <button class="glass-card interactive px-4 py-3 flex items-center gap-2 text-sm" onclick="showToast('Coming Soon 🔜')">🏃 Google Fit</button>
@@ -175,26 +177,27 @@
                 </section>
 
                 <!-- AI Chat View -->
-                <section id="chat-view" class="view-section px-4 md:px-8 pt-6">
+                <section id="chat-view" class="view-section px-4 md:px-8 pt-6" aria-label="AI Coach chat">
                     <div class="max-w-4xl mx-auto h-[80vh] flex flex-col glass-card">
                         <div class="p-4 border-b border-white/10 bg-black/20 font-medium flex items-center gap-3">
                             <div class="w-8 h-8 rounded-full bg-green-500/20 flex items-center justify-center text-xl">🌱</div>
                             AI Sustainability Coach
                         </div>
-                        <div id="chat-container" class="flex-1 overflow-y-auto p-6 flex flex-col gap-2">
+                        <div id="chat-container" class="flex-1 overflow-y-auto p-6 flex flex-col gap-2" role="log" aria-live="polite" aria-label="Chat messages">
                             <div class="chat-bubble ai">Hi! I'm here to help you reduce your footprint. Ask me anything!</div>
                         </div>
                         <div class="p-4 bg-black/20 border-t border-white/10">
-                            <form id="chat-form" class="flex gap-2">
+                            <form id="chat-form" class="flex gap-2" aria-label="Chat message form">
+                                <label for="chat-input" class="sr-only">Type your message to the AI coach</label>
                                 <input type="text" id="chat-input" class="glass-input flex-1 px-4 py-3" placeholder="Ask a question..." required autocomplete="off">
-                                <button type="submit" class="glass-btn px-6 py-2">Send</button>
+                                <button type="submit" class="glass-btn px-6 py-2" aria-label="Send message">Send</button>
                             </form>
                         </div>
                     </div>
                 </section>
 
                 <!-- Weekly Progress View -->
-                <section id="progress-view" class="view-section px-4 md:px-8 pt-6">
+                <section id="progress-view" class="view-section px-4 md:px-8 pt-6" aria-label="Weekly progress">
                     <div class="max-w-4xl mx-auto">
                         <h2 class="text-2xl font-bold mb-6">Weekly Progress</h2>
                         <div class="glass-card p-6 mb-6">
@@ -202,7 +205,7 @@
                                 <h3 class="text-lg font-semibold">Last 7 Days (CO₂ kg)</h3>
                             </div>
                             <div class="relative h-[300px] w-full">
-                                <canvas id="progressChart"></canvas>
+                                <canvas id="progressChart" role="img" aria-label="Line chart showing daily CO2 emissions over the last 7 days">Your browser does not support the canvas element. Shows daily CO2 trend.</canvas>
                             </div>
                         </div>
                         <div class="glass-card p-6">
@@ -215,7 +218,7 @@
                 </section>
 
                 <!-- Achievements View -->
-                <section id="achievements-view" class="view-section px-4 md:px-8 pt-6">
+                <section id="achievements-view" class="view-section px-4 md:px-8 pt-6" aria-label="Achievements">
                     <div class="max-w-5xl mx-auto">
                         <div class="flex justify-between items-center mb-6">
                             <h2 class="text-2xl font-bold">Achievements</h2>
@@ -228,13 +231,14 @@
                 </section>
 
                 <!-- Goals View -->
-                <section id="goals-view" class="view-section px-4 md:px-8 pt-6">
+                <section id="goals-view" class="view-section px-4 md:px-8 pt-6" aria-label="Personal goals">
                     <div class="max-w-4xl mx-auto">
                         <h2 class="text-2xl font-bold mb-6">My Goals</h2>
                         <div class="glass-card p-6 mb-6 bg-black/20">
-                            <form id="goal-form" class="flex gap-3">
+                            <form id="goal-form" class="flex gap-3" aria-label="Add a new goal">
+                                <label for="goal-input" class="sr-only">Describe your sustainability goal</label>
                                 <input type="text" id="goal-input" class="glass-input flex-1 px-4 py-3" placeholder="I want to..." required>
-                                <button type="submit" class="glass-btn px-6 font-semibold">+ Add Goal</button>
+                                <button type="submit" class="glass-btn px-6 font-semibold" aria-label="Add goal">+ Add Goal</button>
                             </form>
                         </div>
                         <div class="flex flex-col gap-3" id="goals-container">
@@ -248,14 +252,14 @@
     </div>
 
     <!-- Landing / Onboarding Wrapper (Before App Access) -->
-    <div id="auth-wrapper" class="absolute inset-0 z-50 flex items-center justify-center transition-opacity duration-500">
+    <div id="auth-wrapper" class="absolute inset-0 z-50 flex items-center justify-center transition-opacity duration-500" role="dialog" aria-label="Welcome to Carbly">
         
         <!-- View 1: Landing Choice -->
-        <div id="landing-view" class="w-full max-w-lg p-4 transition-opacity duration-500">
+        <div id="landing-view" class="w-full max-w-lg p-4 transition-opacity duration-500" role="region" aria-label="Get started">
             <div id="foggy-container" class="foggy-glass p-10 text-center transform transition-all hover:scale-[1.02] duration-500">
                 <div class="relative z-10">
                     <div class="text-6xl mb-6">🌿</div>
-                    <h1 class="text-5xl font-bold mb-4 tracking-tight drop-shadow-lg">Carbly</h1>
+                    <h1 class="text-5xl font-bold mb-4 tracking-tight drop-shadow-lg" id="app-title">Carbly</h1>
                     <p class="text-xl text-green-100 mb-8 font-light drop-shadow">Know your impact. Change your story.</p>
                     
                     <p class="text-sm font-medium text-white/70 mb-4">How would you like to get started?</p>
@@ -272,7 +276,7 @@
         </div>
 
         <!-- View 2: Quick Form Onboarding -->
-        <div id="form-onboarding-view" class="hidden w-full max-w-xl p-4 transition-opacity duration-500 opacity-0">
+        <div id="form-onboarding-view" class="hidden w-full max-w-xl p-4 transition-opacity duration-500 opacity-0" role="region" aria-label="Quick form onboarding">
             <div class="glass-card p-8">
                 <div class="flex justify-between items-center mb-6">
                     <h2 class="text-xl font-bold" id="form-step-title">Step 1: Transport</h2>
@@ -286,35 +290,40 @@
                     <!-- Step 1 -->
                     <div class="form-step block" id="step-1">
                         <label for="f-km" class="block text-sm mb-2">Daily travel distance (km)</label>
-                        <input type="number" id="f-km" class="glass-input p-3 mb-4" value="10">
-                        <label class="block text-sm mb-2">Primary vehicle</label>
-                        <div class="grid grid-cols-2 gap-2 mb-4" id="f-mode-group">
-                            <div class="form-toggle selected" data-val="petrol_car">🚗 Car</div>
-                            <div class="form-toggle" data-val="bike_petrol">🏍️ Motorbike</div>
-                            <div class="form-toggle" data-val="ev_car">⚡ EV</div>
-                            <div class="form-toggle" data-val="metro">🚇 Metro</div>
-                            <div class="form-toggle" data-val="bus">🚌 Bus</div>
-                            <div class="form-toggle" data-val="walk">🚶 Walk</div>
-                        </div>
+                        <input type="number" id="f-km" class="glass-input p-3 mb-4" value="10" aria-describedby="f-km-desc">
+                        <span id="f-km-desc" class="sr-only">Enter your approximate daily travel distance in kilometers</span>
+                        <fieldset>
+                            <legend class="block text-sm mb-2">Primary vehicle</legend>
+                            <div class="grid grid-cols-2 gap-2 mb-4" id="f-mode-group" role="radiogroup" aria-label="Select your primary transport mode">
+                                <button type="button" class="form-toggle selected" data-val="petrol_car" role="radio" aria-checked="true"><span aria-hidden="true">🚗</span> Car</button>
+                                <button type="button" class="form-toggle" data-val="bike_petrol" role="radio" aria-checked="false"><span aria-hidden="true">🏍️</span> Motorbike</button>
+                                <button type="button" class="form-toggle" data-val="ev_car" role="radio" aria-checked="false"><span aria-hidden="true">⚡</span> EV</button>
+                                <button type="button" class="form-toggle" data-val="metro" role="radio" aria-checked="false"><span aria-hidden="true">🚇</span> Metro</button>
+                                <button type="button" class="form-toggle" data-val="bus" role="radio" aria-checked="false"><span aria-hidden="true">🚌</span> Bus</button>
+                                <button type="button" class="form-toggle" data-val="walk" role="radio" aria-checked="false"><span aria-hidden="true">🚶</span> Walk</button>
+                            </div>
+                        </fieldset>
                     </div>
                     <!-- Step 2 -->
                     <div class="form-step hidden" id="step-2">
                         <label for="f-kwh" class="block text-sm mb-2">Monthly Electricity (kWh)</label>
                         <input type="number" id="f-kwh" class="glass-input p-3 mb-4" value="150">
                         <label for="f-ac" class="block text-sm mb-2">AC hours per day</label>
-                        <input type="range" id="f-ac" min="0" max="24" value="4" class="w-full mb-2">
+                        <input type="range" id="f-ac" min="0" max="24" value="4" class="w-full mb-2" aria-valuemin="0" aria-valuemax="24" aria-valuenow="4" aria-label="AC hours per day">
                         <div class="text-center text-sm text-green-200 mb-4" aria-live="polite"><span id="f-ac-val">4</span> hours</div>
                         <label for="f-lpg" class="block text-sm mb-2">LPG Cylinders per month</label>
                         <input type="number" id="f-lpg" class="glass-input p-3 mb-4" value="1">
                     </div>
                     <!-- Step 3 -->
                     <div class="form-step hidden" id="step-3">
-                        <label class="block text-sm mb-2">Diet Type</label>
-                        <div class="grid grid-cols-3 gap-2 mb-4" id="f-diet-group">
-                            <div class="form-toggle" data-val="veg">🥦 Veg</div>
-                            <div class="form-toggle" data-val="egg">🥚 Egg</div>
-                            <div class="form-toggle selected" data-val="non-veg">🍗 Non-veg</div>
-                        </div>
+                        <fieldset>
+                            <legend class="block text-sm mb-2">Diet Type</legend>
+                            <div class="grid grid-cols-3 gap-2 mb-4" id="f-diet-group" role="radiogroup" aria-label="Select your diet type">
+                                <button type="button" class="form-toggle" data-val="veg" role="radio" aria-checked="false"><span aria-hidden="true">🥦</span> Veg</button>
+                                <button type="button" class="form-toggle" data-val="egg" role="radio" aria-checked="false"><span aria-hidden="true">🥚</span> Egg</button>
+                                <button type="button" class="form-toggle selected" data-val="non-veg" role="radio" aria-checked="true"><span aria-hidden="true">🍗</span> Non-veg</button>
+                            </div>
+                        </fieldset>
                         <label for="f-meat" class="block text-sm mb-2">Chicken/Meat meals per week</label>
                         <input type="number" id="f-meat" class="glass-input p-3 mb-4" value="4">
                     </div>
@@ -346,7 +355,7 @@
         </div>
 
         <!-- View 3: Chat Onboarding (Existing style but fullscreen card) -->
-        <div id="chat-onboarding-view" class="hidden w-full max-w-2xl h-[80vh] p-4 transition-opacity duration-500 opacity-0">
+        <div id="chat-onboarding-view" class="hidden w-full max-w-2xl h-[80vh] p-4 transition-opacity duration-500 opacity-0" role="region" aria-label="Chat onboarding">
             <div class="glass-card w-full h-full flex flex-col overflow-hidden">
                 <div class="p-4 border-b border-white/10 bg-black/20 font-medium flex items-center justify-between">
                     <div class="flex items-center gap-3">
@@ -358,11 +367,12 @@
                 <div class="w-full bg-black/30 h-1">
                     <div id="onboarding-progress" class="bg-green-400 h-1 transition-all duration-500 w-[5%]"></div>
                 </div>
-                <div id="onboarding-chat-container" class="flex-1 overflow-y-auto p-6 flex flex-col gap-2"></div>
+                <div id="onboarding-chat-container" class="flex-1 overflow-y-auto p-6 flex flex-col gap-2" role="log" aria-live="polite" aria-label="Onboarding chat messages"></div>
                 <div class="p-4 border-t border-white/10 bg-black/20">
-                    <form id="onboarding-form" class="flex gap-3">
+                    <form id="onboarding-form" class="flex gap-3" aria-label="Onboarding chat form">
+                        <label for="onboarding-input" class="sr-only">Type your answer</label>
                         <input type="text" id="onboarding-input" class="glass-input flex-1 px-4 py-3" placeholder="Type your answer..." required autocomplete="off">
-                        <button type="submit" class="glass-btn px-6 py-2">Send</button>
+                        <button type="submit" class="glass-btn px-6 py-2" aria-label="Send answer">Send</button>
                     </form>
                 </div>
             </div>
@@ -371,10 +381,10 @@
     </div>
 
     <!-- Manual Entry Modal -->
-    <div id="manual-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center opacity-0 transition-opacity">
+    <div id="manual-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center opacity-0 transition-opacity" role="dialog" aria-modal="true" aria-labelledby="manual-modal-title">
         <div class="glass-card w-full max-w-md p-6 transform scale-95 transition-transform" id="manual-modal-content">
-            <h3 class="text-xl font-bold mb-4">Quick Log</h3>
-            <form id="manual-form" class="space-y-4">
+            <h3 class="text-xl font-bold mb-4" id="manual-modal-title">Quick Log</h3>
+            <form id="manual-form" class="space-y-4" aria-label="Quick carbon data log">
                 <div>
                     <label for="manual-kwh" class="block text-sm text-green-200 mb-1">Electricity (kWh this month)</label>
                     <input type="number" id="manual-kwh" class="glass-input w-full px-3 py-2">
@@ -388,7 +398,7 @@
                     <input type="number" id="manual-ac" class="glass-input w-full px-3 py-2">
                 </div>
                 <div class="flex justify-end gap-3 mt-6">
-                    <button type="button" class="px-4 py-2 text-white/70 hover:text-white" onclick="closeManualEntry()">Cancel</button>
+                    <button type="button" class="px-4 py-2 text-white/70 hover:text-white" onclick="closeManualEntry()" aria-label="Cancel and close modal">Cancel</button>
                     <button type="submit" class="glass-btn px-6 py-2">Save (+10 XP)</button>
                 </div>
             </form>
@@ -396,7 +406,7 @@
     </div>
 
     <!-- Toast Notification -->
-    <div id="toast" aria-live="polite" class="fixed top-6 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-6 py-3 rounded-full shadow-lg transition-all duration-300 opacity-0 -translate-y-full z-50 pointer-events-none font-medium">
+    <div id="toast" role="alert" aria-live="assertive" aria-atomic="true" class="fixed top-6 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-6 py-3 rounded-full shadow-lg transition-all duration-300 opacity-0 -translate-y-full z-50 pointer-events-none font-medium">
         Message
     </div>
 
