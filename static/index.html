@@ -10,6 +10,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
 </head>
 <body class="text-white antialiased">
     <div class="aurora"></div>
@@ -40,27 +41,27 @@
                 </div>
             </div>
 
-            <div class="flex-1 overflow-y-auto overflow-x-hidden">
-                <div class="nav-item active" onclick="navTo('dashboard')">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+            <div class="flex-1 overflow-y-auto overflow-x-hidden flex flex-col">
+                <button class="nav-item active w-full text-left" aria-label="Dashboard" onclick="navTo('dashboard')">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" aria-hidden="true" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
                     <span class="nav-text">Dashboard</span>
-                </div>
-                <div class="nav-item" onclick="navTo('chat')">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
+                </button>
+                <button class="nav-item w-full text-left" aria-label="AI Coach" onclick="navTo('chat')">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" aria-hidden="true" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
                     <span class="nav-text">AI Coach</span>
-                </div>
-                <div class="nav-item" onclick="navTo('progress')">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                </button>
+                <button class="nav-item w-full text-left" aria-label="Weekly Progress" onclick="navTo('progress')">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" aria-hidden="true" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                     <span class="nav-text">Weekly Progress</span>
-                </div>
-                <div class="nav-item" onclick="navTo('achievements')">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
+                </button>
+                <button class="nav-item w-full text-left" aria-label="Achievements" onclick="navTo('achievements')">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" aria-hidden="true" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
                     <span class="nav-text">Achievements</span>
-                </div>
-                <div class="nav-item" onclick="navTo('goals')">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                </button>
+                <button class="nav-item w-full text-left" aria-label="My Goals" onclick="navTo('goals')">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" aria-hidden="true" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
                     <span class="nav-text">My Goals</span>
-                </div>
+                </button>
             </div>
 
             <div class="sidebar-bottom p-6 border-t border-white/10 mt-auto">
@@ -284,7 +285,7 @@
                 <div id="form-steps-container" class="min-h-[250px]">
                     <!-- Step 1 -->
                     <div class="form-step block" id="step-1">
-                        <label class="block text-sm mb-2">Daily travel distance (km)</label>
+                        <label for="f-km" class="block text-sm mb-2">Daily travel distance (km)</label>
                         <input type="number" id="f-km" class="glass-input p-3 mb-4" value="10">
                         <label class="block text-sm mb-2">Primary vehicle</label>
                         <div class="grid grid-cols-2 gap-2 mb-4" id="f-mode-group">
@@ -298,12 +299,12 @@
                     </div>
                     <!-- Step 2 -->
                     <div class="form-step hidden" id="step-2">
-                        <label class="block text-sm mb-2">Monthly Electricity (kWh)</label>
+                        <label for="f-kwh" class="block text-sm mb-2">Monthly Electricity (kWh)</label>
                         <input type="number" id="f-kwh" class="glass-input p-3 mb-4" value="150">
-                        <label class="block text-sm mb-2">AC hours per day</label>
+                        <label for="f-ac" class="block text-sm mb-2">AC hours per day</label>
                         <input type="range" id="f-ac" min="0" max="24" value="4" class="w-full mb-2">
-                        <div class="text-center text-sm text-green-200 mb-4"><span id="f-ac-val">4</span> hours</div>
-                        <label class="block text-sm mb-2">LPG Cylinders per month</label>
+                        <div class="text-center text-sm text-green-200 mb-4" aria-live="polite"><span id="f-ac-val">4</span> hours</div>
+                        <label for="f-lpg" class="block text-sm mb-2">LPG Cylinders per month</label>
                         <input type="number" id="f-lpg" class="glass-input p-3 mb-4" value="1">
                     </div>
                     <!-- Step 3 -->
@@ -314,16 +315,16 @@
                             <div class="form-toggle" data-val="egg">🥚 Egg</div>
                             <div class="form-toggle selected" data-val="non-veg">🍗 Non-veg</div>
                         </div>
-                        <label class="block text-sm mb-2">Chicken/Meat meals per week</label>
+                        <label for="f-meat" class="block text-sm mb-2">Chicken/Meat meals per week</label>
                         <input type="number" id="f-meat" class="glass-input p-3 mb-4" value="4">
                     </div>
                     <!-- Step 4 -->
                     <div class="form-step hidden" id="step-4">
-                        <label class="block text-sm mb-2">Video Streaming (hours/day)</label>
+                        <label for="f-stream" class="block text-sm mb-2">Video Streaming (hours/day)</label>
                         <input type="number" id="f-stream" class="glass-input p-3 mb-4" value="3">
-                        <label class="block text-sm mb-2">Online Orders (per month)</label>
+                        <label for="f-orders" class="block text-sm mb-2">Online Orders (per month)</label>
                         <input type="number" id="f-orders" class="glass-input p-3 mb-4" value="10">
-                        <label class="block text-sm mb-2">New Clothes (items/month)</label>
+                        <label for="f-clothes" class="block text-sm mb-2">New Clothes (items/month)</label>
                         <input type="number" id="f-clothes" class="glass-input p-3 mb-4" value="2">
                     </div>
                     <!-- Step 5 -->
@@ -375,15 +376,15 @@
             <h3 class="text-xl font-bold mb-4">Quick Log</h3>
             <form id="manual-form" class="space-y-4">
                 <div>
-                    <label class="block text-sm text-green-200 mb-1">Electricity (kWh this month)</label>
+                    <label for="manual-kwh" class="block text-sm text-green-200 mb-1">Electricity (kWh this month)</label>
                     <input type="number" id="manual-kwh" class="glass-input w-full px-3 py-2">
                 </div>
                 <div>
-                    <label class="block text-sm text-green-200 mb-1">Flights (Domestic this year)</label>
+                    <label for="manual-flights" class="block text-sm text-green-200 mb-1">Flights (Domestic this year)</label>
                     <input type="number" id="manual-flights" class="glass-input w-full px-3 py-2">
                 </div>
                 <div>
-                    <label class="block text-sm text-green-200 mb-1">AC Hours (Daily avg)</label>
+                    <label for="manual-ac" class="block text-sm text-green-200 mb-1">AC Hours (Daily avg)</label>
                     <input type="number" id="manual-ac" class="glass-input w-full px-3 py-2">
                 </div>
                 <div class="flex justify-end gap-3 mt-6">
@@ -395,7 +396,7 @@
     </div>
 
     <!-- Toast Notification -->
-    <div id="toast" class="fixed top-6 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-6 py-3 rounded-full shadow-lg transition-all duration-300 opacity-0 -translate-y-full z-50 pointer-events-none font-medium">
+    <div id="toast" aria-live="polite" class="fixed top-6 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-6 py-3 rounded-full shadow-lg transition-all duration-300 opacity-0 -translate-y-full z-50 pointer-events-none font-medium">
         Message
     </div>
 
