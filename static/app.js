@@ -150,14 +150,21 @@ const totalSteps = 5;
 
 document.querySelectorAll('.form-toggle').forEach(btn => {
     btn.addEventListener('click', (e) => {
-        const group = e.target.parentElement;
-        group.querySelectorAll('.form-toggle').forEach(b => b.classList.remove('selected'));
-        e.target.classList.add('selected');
+        const toggle = e.target.closest('.form-toggle');
+        if (!toggle) return;
+        const group = toggle.parentElement;
+        group.querySelectorAll('.form-toggle').forEach(b => {
+            b.classList.remove('selected');
+            if (b.getAttribute('role') === 'radio') b.setAttribute('aria-checked', 'false');
+        });
+        toggle.classList.add('selected');
+        if (toggle.getAttribute('role') === 'radio') toggle.setAttribute('aria-checked', 'true');
     });
 });
 
 document.getElementById('f-ac').addEventListener('input', (e) => {
     document.getElementById('f-ac-val').textContent = e.target.value;
+    e.target.setAttribute('aria-valuenow', e.target.value);
 });
 
 document.getElementById('form-next').addEventListener('click', () => {
@@ -418,13 +425,13 @@ function renderActions(actions) {
         
         div.innerHTML = `
             <div class="flex justify-between items-start mb-3">
-                <h4 class="font-bold leading-tight">${act.title}</h4>
-                <span class="text-xs px-2 py-1 bg-black/30 rounded capitalize ${diffColor}">${act.difficulty}</span>
+                <h4 class="font-bold leading-tight">${DOMPurify.sanitize(act.title)}</h4>
+                <span class="text-xs px-2 py-1 bg-black/30 rounded capitalize ${diffColor}">${DOMPurify.sanitize(act.difficulty)}</span>
             </div>
-            <p class="text-xs text-green-100/70 mb-4 flex-1">${act.description}</p>
+            <p class="text-xs text-green-100/70 mb-4 flex-1">${DOMPurify.sanitize(act.description)}</p>
             <div class="flex items-center justify-between mt-auto">
                 <span class="font-semibold text-green-300 text-sm">-${Math.round(act.potential_saving_kg_monthly)} kg/mo</span>
-                <button class="text-xs bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-full transition" onclick="takeAction('${act.title}')">Take Action</button>
+                <button class="text-xs bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-full transition" aria-label="Take action on ${DOMPurify.sanitize(act.title)}" onclick="takeAction('${DOMPurify.sanitize(act.title).replace(/'/g, "\\'")}')">Take Action</button>
             </div>
         `;
         container.appendChild(div);
@@ -508,18 +515,19 @@ function renderGoals() {
     
     goals.forEach((g, index) => {
         const checkClass = g.completed ? 'text-green-400 bg-green-400/10 border-green-400/50' : 'text-white/50 bg-white/5 border-white/10';
+        const sanitizedText = DOMPurify.sanitize(g.text);
         container.innerHTML += `
-            <div class="glass-card p-4 flex items-center justify-between border ${g.completed ? 'border-green-500/30' : ''}">
+            <div class="glass-card p-4 flex items-center justify-between border ${g.completed ? 'border-green-500/30' : ''}" role="listitem">
                 <div class="flex items-center gap-4 flex-1">
-                    <button class="w-6 h-6 rounded-full border ${checkClass} flex items-center justify-center text-xs" onclick="toggleGoal(${index})">
+                    <button class="w-6 h-6 rounded-full border ${checkClass} flex items-center justify-center text-xs" onclick="toggleGoal(${index})" aria-label="${g.completed ? 'Mark incomplete' : 'Mark complete'}: ${sanitizedText}">
                         ${g.completed ? '✓' : ''}
                     </button>
                     <div>
-                        <p class="${g.completed ? 'line-through text-white/50' : 'font-medium'}">${g.text}</p>
+                        <p class="${g.completed ? 'line-through text-white/50' : 'font-medium'}">${sanitizedText}</p>
                         <p class="text-xs text-white/40">Added ${g.date}</p>
                     </div>
                 </div>
-                <button class="text-red-400/50 hover:text-red-400 text-sm px-2" onclick="deleteGoal(${index})">✕</button>
+                <button class="text-red-400/50 hover:text-red-400 text-sm px-2" onclick="deleteGoal(${index})" aria-label="Delete goal: ${sanitizedText}">✕</button>
             </div>
         `;
     });
@@ -602,6 +610,16 @@ function closeManualEntry() {
     document.getElementById('manual-modal-content').classList.add('scale-95');
     setTimeout(() => document.getElementById('manual-modal').classList.add('hidden'), 300);
 }
+
+// Close modal on Escape key
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        const modal = document.getElementById('manual-modal');
+        if (!modal.classList.contains('hidden')) {
+            closeManualEntry();
+        }
+    }
+});
 
 document.getElementById('manual-form').addEventListener('submit', (e) => {
     e.preventDefault();
