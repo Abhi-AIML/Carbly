@@ -30,16 +30,35 @@ Carbly uses a three-step flow to maximize user engagement and accuracy:
                     |
              [calculator.py]
 ```
-**User Flow:** Landing Page -> AI Chat Onboarding (13 questions) -> Dashboard unlocks with score, benchmarks, and actionable insights.
+**User Flow:** Landing Page -> AI Chat Onboarding (13 questions) OR Quick Form (5 steps) -> Dashboard unlocks with score, benchmarks, and actionable insights.
 
 ## Unique Features
-- **Hybrid Onboarding**: Users can choose between a conversational AI chat onboarding or a lightning-fast 5-step Quick Form.
+- **Hybrid Onboarding**: Users can choose between a conversational AI chat onboarding or a lightning-fast 5-step Quick Form. Previous sessions are restored from localStorage so returning users skip onboarding entirely.
 - **"Carbon Karma" Gamification**: A complete XP system! Users level up from "Seedling" to "Earth Champion" by logging data, hitting footprint goals, and completing sustainability tasks.
 - **Achievements & Badges**: 12 custom India-themed unlockable badges (e.g., "Metro Mover", "Ganga Guardian") with celebratory confetti animations.
-- **"Your Earth" Widget**: A dynamic, animated SVG planet on the dashboard that shifts from lush green to smoggy amber depending on the user's carbon score.
+- **"Your Earth" Widget**: A dynamic, animated planet on the dashboard that shifts from lush green to smoggy amber depending on the user's carbon score.
 - **Weekly Progress & Goals**: LocalStorage-powered data persistence to track a 7-day footprint line chart, 30-day login streak heatmap, and a personal goals memory bank.
-- **AI Coach with Markdown**: A slide-out persistent AI assistant that renders rich markdown tables, bold text, and lists for beautiful, scannable data formatting.
+- **AI Coach with Markdown**: A persistent AI sustainability coach that renders rich markdown tables, bold text, and lists for beautiful, scannable data formatting. Powered by DOMPurify for XSS-safe rendering.
 - **Glassmorphism Design**: Sleek animated aurora background with frosted glass cards.
+
+## Security Features
+- **Rate Limiting**: In-memory per-IP rate limiter (30 requests/60s) to prevent abuse.
+- **Security Headers**: X-Content-Type-Options, X-Frame-Options, X-XSS-Protection, Referrer-Policy, Permissions-Policy, Strict-Transport-Security, and Content-Security-Policy.
+- **Input Sanitization**: All user chat input is HTML-escaped server-side via `html.escape()`. Frontend uses DOMPurify for XSS-safe markdown rendering.
+- **Pydantic Validation**: All API inputs are validated with Pydantic models with bounded ranges (e.g., `km_per_day: ge=0, le=1000`).
+- **Restricted CORS**: Origins, methods, and headers are explicitly whitelisted — no wildcards.
+- **Structured Logging**: All errors are logged with proper severity levels (no `print()` statements).
+
+## Accessibility (WCAG 2.1 AA)
+- **Skip-to-content** link for keyboard navigation.
+- **Landmark roles** (`navigation`, `main`, `dialog`) on all major sections.
+- **ARIA attributes**: `aria-label`, `aria-live`, `aria-checked`, `aria-modal`, `aria-describedby`, `role="log"`, `role="radiogroup"`, `role="alert"` throughout.
+- **Screen-reader-only labels** (`.sr-only`) on all form inputs.
+- **Focus-visible outlines** on all interactive elements.
+- **Keyboard support**: Modal closes on Escape, all toggles are focusable `<button>` elements with proper `role="radio"`.
+- **Canvas fallback text** for chart elements.
+- **`prefers-reduced-motion`** media query disables animations.
+- **Semantic HTML**: Proper heading hierarchy (`h1` → `h2` → `h3`), `<fieldset>`/`<legend>` for toggle groups, `<label for>` on all inputs.
 
 ## India-Specific Adaptations
 - **Grid Factor**: Uses `0.82 kg CO₂/kWh` based on CEA 2023 data.
@@ -75,6 +94,22 @@ gcloud run deploy carbly \
   --port 8080
 ```
 
+## Testing
+```bash
+python -m pytest tests/ -v
+```
+All 10 tests pass covering:
+- Zero footprint edge case
+- Transport calculation accuracy
+- Energy grid factor validation
+- Action engine conditional logic
+- Score clamping (0–100)
+- Benchmark percentage math
+- XSS input sanitization
+- JSON parsing error handling
+- Chat history validation
+- Data extraction regex
+
 ## Assumptions Made
 - Emission factors are averages tailored to India (e.g., 0.82 for electricity, 0.192 for petrol car km).
 - Average domestic flight distance is assumed to be 800km.
@@ -82,9 +117,10 @@ gcloud run deploy carbly \
 - Daily steps track avoided car trips indirectly in future updates (currently a lifestyle metric).
 
 ## Tech Stack
-- **Frontend**: HTML5, Vanilla JS, Tailwind CSS (via CDN), Chart.js (via CDN), Marked.js (via CDN), Canvas-Confetti (via CDN).
-- **Backend**: Python 3.11, FastAPI, Uvicorn.
+- **Frontend**: HTML5, Vanilla JS, Tailwind CSS (via CDN), Chart.js (via CDN), Marked.js (via CDN), DOMPurify (via CDN), Canvas-Confetti (via CDN).
+- **Backend**: Python 3.11+, FastAPI, Uvicorn, Pydantic v2.
 - **AI Integration**: Google Gemini API (`gemini-2.5-flash`).
 - **Data Persistence**: Browser `localStorage` (No database required, making the app blazingly fast and fully private).
-- **Testing**: Pytest.
+- **Security**: Rate limiting, CSP, HSTS, DOMPurify XSS protection, Pydantic input validation.
+- **Testing**: Pytest (10 tests).
 - **Deployment**: Docker, Google Cloud Run.
