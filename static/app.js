@@ -239,7 +239,8 @@ function addMessage(role, text, containerId) {
     div.className = `chat-bubble ${role}`;
     
     if (role === 'ai') {
-        div.innerHTML = marked.parse(text);
+        const rawHtml = marked.parse(text);
+        div.innerHTML = DOMPurify.sanitize(rawHtml);
     } else {
         div.textContent = text;
     }
