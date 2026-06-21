@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carbly - Carbon Footprint Awareness</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body class="text-white antialiased">
+    <div class="aurora"></div>
+
+    <div class="app-container" id="app-container" style="display: none;">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-top p-6 pb-2">
+                <div class="flex items-center gap-3 mb-2">
+                    <svg class="w-8 h-8 text-green-400" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M17,8C8,10 5.9,16.17 5.82,16.5L4.01,14.69C3.62,14.3 3,14.58 3,15.13V19C3,20.1 3.9,21 5,21H8.87C9.42,21 9.7,20.38 9.31,19.99L7.5,18.18C7.83,18.1 14,16 16,7C17,8 17,8 17,8Z"/>
+                    </svg>
+                    <h1 class="text-2xl font-bold tracking-tight">Carbly</h1>
+                </div>
+                <p class="text-xs text-green-200">Know your impact</p>
+            </div>
+            
+            <div class="sidebar-profile px-6 py-4 border-b border-white/10 mb-4">
+                <div class="flex items-center gap-3 mb-2">
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-green-400 to-teal-500 flex items-center justify-center font-bold" id="user-avatar">U</div>
+                    <div>
+                        <p class="font-medium text-sm" id="user-name">User</p>
+                        <p class="text-xs text-amber-300 font-medium" id="karma-title">Seedling - Lvl 1</p>
+                    </div>
+                </div>
+                <div class="w-full bg-black/40 h-1.5 rounded-full overflow-hidden">
+                    <div class="bg-amber-400 h-full w-0 transition-all duration-1000" id="xp-bar"></div>
+                </div>
+            </div>
+
+            <div class="flex-1 overflow-y-auto overflow-x-hidden">
+                <div class="nav-item active" onclick="navTo('dashboard')">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                    <span class="nav-text">Dashboard</span>
+                </div>
+                <div class="nav-item" onclick="navTo('chat')">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
+                    <span class="nav-text">AI Coach</span>
+                </div>
+                <div class="nav-item" onclick="navTo('progress')">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    <span class="nav-text">Weekly Progress</span>
+                </div>
+                <div class="nav-item" onclick="navTo('achievements')">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
+                    <span class="nav-text">Achievements</span>
+                </div>
+                <div class="nav-item" onclick="navTo('goals')">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                    <span class="nav-text">My Goals</span>
+                </div>
+            </div>
+
+            <div class="sidebar-bottom p-6 border-t border-white/10 mt-auto">
+                <div class="glass-card p-3 flex items-center gap-3 cursor-pointer interactive" onclick="openManualEntry()">
+                    <div class="w-8 h-8 rounded-full border-2 border-green-400 flex items-center justify-center text-xs font-bold" id="mini-score-ring">
+                        --
+                    </div>
+                    <div>
+                        <p class="text-xs text-green-100">This Month</p>
+                        <p class="text-sm font-bold" id="mini-kg">-- kg CO₂</p>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Top Stats Bar -->
+            <div class="stats-bar hidden" id="top-stats-bar">
+                <div class="glass-card stat-pill interactive">🔥 <span id="stat-streak">0 Day Streak</span></div>
+                <div class="glass-card stat-pill interactive">🌿 <span id="stat-xp">0 XP</span></div>
+                <div class="glass-card stat-pill interactive" onclick="navTo('achievements')">🏆 <span id="stat-badges">0/12 Badges</span></div>
+                <div class="glass-card stat-pill interactive">📉 <span id="stat-monthly">-- kg this month</span></div>
+                <div class="glass-card stat-pill interactive">🌍 <span id="stat-rating">--% Rating</span></div>
+            </div>
+
+            <!-- Views -->
+            <div class="relative w-full h-full">
+                
+                <!-- Dashboard View -->
+                <section id="dashboard-view" class="view-section px-4 md:px-8 pt-6">
+                    <div class="max-w-5xl mx-auto">
+                        <!-- Hero Row -->
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                            <div class="glass-card p-6 flex flex-col items-center justify-center text-center relative overflow-hidden">
+                                <h3 class="text-lg font-bold mb-4 z-10">Your Earth</h3>
+                                <div id="planet-widget" class="planet-widget mb-4 z-10" style="background: radial-gradient(circle at 30% 30%, #4ade80, #064e3b);"></div>
+                                <p class="text-sm text-green-200 z-10">Keeping it green!</p>
+                            </div>
+
+                            <div class="glass-card p-6 flex flex-col items-center justify-center text-center">
+                                <div id="score-ring" class="score-ring mb-4" style="--score-deg: 0deg; --score-color: #4ade80;">
+                                    <span class="text-4xl font-bold" id="dash-score">--</span>
+                                    <span class="text-xs text-green-200">Score</span>
+                                </div>
+                                <p class="text-2xl font-bold mb-1" id="dash-monthly-kg">-- kg CO₂</p>
+                                <p class="text-sm text-green-300">Total this month</p>
+                            </div>
+
+                            <div class="glass-card p-6 flex flex-col justify-center gap-4">
+                                <div>
+                                    <p class="text-sm text-green-200 mb-1">vs India Average</p>
+                                    <div class="flex items-end gap-2">
+                                        <span class="text-3xl font-bold" id="bench-india">--%</span>
+                                        <span class="text-sm mb-1" id="bench-india-text"></span>
+                                    </div>
+                                </div>
+                                <div class="h-px bg-white/10 w-full"></div>
+                                <div>
+                                    <p class="text-sm text-green-200 mb-1">vs Paris Target</p>
+                                    <div class="flex items-end gap-2">
+                                        <span class="text-3xl font-bold" id="bench-paris">--%</span>
+                                        <span class="text-sm mb-1" id="bench-paris-text"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Breakdown Row -->
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                            <div class="glass-card p-6 lg:col-span-2">
+                                <h3 class="text-lg font-semibold mb-4">Footprint Breakdown</h3>
+                                <div class="relative h-[250px] w-full flex justify-center">
+                                    <canvas id="categoryChart"></canvas>
+                                </div>
+                            </div>
+                            <div class="glass-card p-6">
+                                <h3 class="text-lg font-semibold mb-4">Quick Equivalences</h3>
+                                <div class="flex flex-col gap-4">
+                                    <div class="flex items-center gap-4 bg-black/20 p-3 rounded-xl">
+                                        <span class="text-2xl">🌳</span>
+                                        <div><p class="font-bold text-lg leading-tight" id="eq-trees">--</p><p class="text-xs text-green-200">Trees to offset</p></div>
+                                    </div>
+                                    <div class="flex items-center gap-4 bg-black/20 p-3 rounded-xl">
+                                        <span class="text-2xl">✈️</span>
+                                        <div><p class="font-bold text-lg leading-tight" id="eq-flights">--</p><p class="text-xs text-green-200">Domestic flights</p></div>
+                                    </div>
+                                    <div class="flex items-center gap-4 bg-black/20 p-3 rounded-xl">
+                                        <span class="text-2xl">📱</span>
+                                        <div><p class="font-bold text-lg leading-tight">14,200</p><p class="text-xs text-green-200">Phone charges</p></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Top Actions -->
+                        <h3 class="text-xl font-bold mb-4">Recommended Actions</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8" id="actions-container">
+                            <!-- Injected -->
+                        </div>
+
+                        <!-- Integrations -->
+                        <h3 class="text-xl font-bold mb-4">Connect Data</h3>
+                        <div class="flex flex-wrap gap-4 mb-8">
+                            <button class="glass-card interactive px-4 py-3 flex items-center gap-2 text-sm" onclick="showToast('Coming Soon 🔜')">🍎 Apple Health</button>
+                            <button class="glass-card interactive px-4 py-3 flex items-center gap-2 text-sm" onclick="showToast('Coming Soon 🔜')">🏃 Google Fit</button>
+                            <button class="glass-card interactive px-4 py-3 flex items-center gap-2 text-sm" onclick="showToast('Coming Soon 🔜')">⚡ Smart Meter</button>
+                            <button class="glass-card interactive px-4 py-3 flex items-center gap-2 text-sm border-green-400/50" onclick="openManualEntry()">✏️ Manual Entry</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- AI Chat View -->
+                <section id="chat-view" class="view-section px-4 md:px-8 pt-6">
+                    <div class="max-w-4xl mx-auto h-[80vh] flex flex-col glass-card">
+                        <div class="p-4 border-b border-white/10 bg-black/20 font-medium flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-full bg-green-500/20 flex items-center justify-center text-xl">🌱</div>
+                            AI Sustainability Coach
+                        </div>
+                        <div id="chat-container" class="flex-1 overflow-y-auto p-6 flex flex-col gap-2">
+                            <div class="chat-bubble ai">Hi! I'm here to help you reduce your footprint. Ask me anything!</div>
+                        </div>
+                        <div class="p-4 bg-black/20 border-t border-white/10">
+                            <form id="chat-form" class="flex gap-2">
+                                <input type="text" id="chat-input" class="glass-input flex-1 px-4 py-3" placeholder="Ask a question..." required autocomplete="off">
+                                <button type="submit" class="glass-btn px-6 py-2">Send</button>
+                            </form>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Weekly Progress View -->
+                <section id="progress-view" class="view-section px-4 md:px-8 pt-6">
+                    <div class="max-w-4xl mx-auto">
+                        <h2 class="text-2xl font-bold mb-6">Weekly Progress</h2>
+                        <div class="glass-card p-6 mb-6">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="text-lg font-semibold">Last 7 Days (CO₂ kg)</h3>
+                            </div>
+                            <div class="relative h-[300px] w-full">
+                                <canvas id="progressChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="glass-card p-6">
+                            <h3 class="text-lg font-semibold mb-4">30-Day Streak Heatmap</h3>
+                            <div class="flex flex-wrap gap-1" id="heatmap-container">
+                                <!-- Injected -->
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Achievements View -->
+                <section id="achievements-view" class="view-section px-4 md:px-8 pt-6">
+                    <div class="max-w-5xl mx-auto">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-2xl font-bold">Achievements</h2>
+                            <span class="glass-card px-4 py-1 text-sm text-green-300" id="badge-count-display">0/12 Unlocked</span>
+                        </div>
+                        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4" id="badges-container">
+                            <!-- Injected -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Goals View -->
+                <section id="goals-view" class="view-section px-4 md:px-8 pt-6">
+                    <div class="max-w-4xl mx-auto">
+                        <h2 class="text-2xl font-bold mb-6">My Goals</h2>
+                        <div class="glass-card p-6 mb-6 bg-black/20">
+                            <form id="goal-form" class="flex gap-3">
+                                <input type="text" id="goal-input" class="glass-input flex-1 px-4 py-3" placeholder="I want to..." required>
+                                <button type="submit" class="glass-btn px-6 font-semibold">+ Add Goal</button>
+                            </form>
+                        </div>
+                        <div class="flex flex-col gap-3" id="goals-container">
+                            <!-- Injected -->
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Landing / Onboarding Wrapper (Before App Access) -->
+    <div id="auth-wrapper" class="absolute inset-0 z-50 flex items-center justify-center transition-opacity duration-500">
+        
+        <!-- View 1: Landing Choice -->
+        <div id="landing-view" class="w-full max-w-lg p-4 transition-opacity duration-500">
+            <div id="foggy-container" class="foggy-glass p-10 text-center transform transition-all hover:scale-[1.02] duration-500">
+                <div class="relative z-10">
+                    <div class="text-6xl mb-6">🌿</div>
+                    <h1 class="text-5xl font-bold mb-4 tracking-tight drop-shadow-lg">Carbly</h1>
+                    <p class="text-xl text-green-100 mb-8 font-light drop-shadow">Know your impact. Change your story.</p>
+                    
+                    <p class="text-sm font-medium text-white/70 mb-4">How would you like to get started?</p>
+                    <div class="flex flex-col gap-3">
+                        <button onclick="startOnboarding('chat')" class="glass-btn py-4 text-lg font-semibold flex items-center justify-center gap-2">
+                            💬 Chat with AI Assistant
+                        </button>
+                        <button onclick="startOnboarding('form')" class="glass-card interactive py-4 text-lg font-semibold flex items-center justify-center gap-2 bg-white/5">
+                            📋 Quick Form (5 steps)
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- View 2: Quick Form Onboarding -->
+        <div id="form-onboarding-view" class="hidden w-full max-w-xl p-4 transition-opacity duration-500 opacity-0">
+            <div class="glass-card p-8">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-xl font-bold" id="form-step-title">Step 1: Transport</h2>
+                    <span class="text-sm text-green-300" id="form-step-indicator">1 of 5</span>
+                </div>
+                <div class="w-full bg-black/30 rounded-full h-2 mb-6">
+                    <div class="bg-green-400 h-2 rounded-full transition-all duration-300" id="form-progress" style="width: 20%"></div>
+                </div>
+                
+                <div id="form-steps-container" class="min-h-[250px]">
+                    <!-- Step 1 -->
+                    <div class="form-step block" id="step-1">
+                        <label class="block text-sm mb-2">Daily travel distance (km)</label>
+                        <input type="number" id="f-km" class="glass-input p-3 mb-4" value="10">
+                        <label class="block text-sm mb-2">Primary vehicle</label>
+                        <div class="grid grid-cols-2 gap-2 mb-4" id="f-mode-group">
+                            <div class="form-toggle selected" data-val="petrol_car">🚗 Car</div>
+                            <div class="form-toggle" data-val="bike_petrol">🏍️ Motorbike</div>
+                            <div class="form-toggle" data-val="ev_car">⚡ EV</div>
+                            <div class="form-toggle" data-val="metro">🚇 Metro</div>
+                            <div class="form-toggle" data-val="bus">🚌 Bus</div>
+                            <div class="form-toggle" data-val="walk">🚶 Walk</div>
+                        </div>
+                    </div>
+                    <!-- Step 2 -->
+                    <div class="form-step hidden" id="step-2">
+                        <label class="block text-sm mb-2">Monthly Electricity (kWh)</label>
+                        <input type="number" id="f-kwh" class="glass-input p-3 mb-4" value="150">
+                        <label class="block text-sm mb-2">AC hours per day</label>
+                        <input type="range" id="f-ac" min="0" max="24" value="4" class="w-full mb-2">
+                        <div class="text-center text-sm text-green-200 mb-4"><span id="f-ac-val">4</span> hours</div>
+                        <label class="block text-sm mb-2">LPG Cylinders per month</label>
+                        <input type="number" id="f-lpg" class="glass-input p-3 mb-4" value="1">
+                    </div>
+                    <!-- Step 3 -->
+                    <div class="form-step hidden" id="step-3">
+                        <label class="block text-sm mb-2">Diet Type</label>
+                        <div class="grid grid-cols-3 gap-2 mb-4" id="f-diet-group">
+                            <div class="form-toggle" data-val="veg">🥦 Veg</div>
+                            <div class="form-toggle" data-val="egg">🥚 Egg</div>
+                            <div class="form-toggle selected" data-val="non-veg">🍗 Non-veg</div>
+                        </div>
+                        <label class="block text-sm mb-2">Chicken/Meat meals per week</label>
+                        <input type="number" id="f-meat" class="glass-input p-3 mb-4" value="4">
+                    </div>
+                    <!-- Step 4 -->
+                    <div class="form-step hidden" id="step-4">
+                        <label class="block text-sm mb-2">Video Streaming (hours/day)</label>
+                        <input type="number" id="f-stream" class="glass-input p-3 mb-4" value="3">
+                        <label class="block text-sm mb-2">Online Orders (per month)</label>
+                        <input type="number" id="f-orders" class="glass-input p-3 mb-4" value="10">
+                        <label class="block text-sm mb-2">New Clothes (items/month)</label>
+                        <input type="number" id="f-clothes" class="glass-input p-3 mb-4" value="2">
+                    </div>
+                    <!-- Step 5 -->
+                    <div class="form-step hidden" id="step-5">
+                        <div class="text-center py-8">
+                            <div class="text-5xl mb-4">✨</div>
+                            <h3 class="text-2xl font-bold mb-2">All set!</h3>
+                            <p class="text-green-200">Ready to calculate your footprint?</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex justify-between mt-6">
+                    <button id="form-back" class="text-white/70 hover:text-white px-4 py-2 hidden">Back</button>
+                    <button id="form-next" class="glass-btn px-8 py-2 ml-auto">Continue</button>
+                    <button id="form-submit" class="glass-btn px-8 py-2 bg-green-500/30 hidden ml-auto">Calculate My Footprint</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- View 3: Chat Onboarding (Existing style but fullscreen card) -->
+        <div id="chat-onboarding-view" class="hidden w-full max-w-2xl h-[80vh] p-4 transition-opacity duration-500 opacity-0">
+            <div class="glass-card w-full h-full flex flex-col overflow-hidden">
+                <div class="p-4 border-b border-white/10 bg-black/20 font-medium flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-full bg-green-500/20 flex items-center justify-center text-xl">🌱</div>
+                        Carbly Assistant
+                    </div>
+                    <span class="text-xs text-green-300">Question <span id="q-count">1</span> of 13</span>
+                </div>
+                <div class="w-full bg-black/30 h-1">
+                    <div id="onboarding-progress" class="bg-green-400 h-1 transition-all duration-500 w-[5%]"></div>
+                </div>
+                <div id="onboarding-chat-container" class="flex-1 overflow-y-auto p-6 flex flex-col gap-2"></div>
+                <div class="p-4 border-t border-white/10 bg-black/20">
+                    <form id="onboarding-form" class="flex gap-3">
+                        <input type="text" id="onboarding-input" class="glass-input flex-1 px-4 py-3" placeholder="Type your answer..." required autocomplete="off">
+                        <button type="submit" class="glass-btn px-6 py-2">Send</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Manual Entry Modal -->
+    <div id="manual-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center opacity-0 transition-opacity">
+        <div class="glass-card w-full max-w-md p-6 transform scale-95 transition-transform" id="manual-modal-content">
+            <h3 class="text-xl font-bold mb-4">Quick Log</h3>
+            <form id="manual-form" class="space-y-4">
+                <div>
+                    <label class="block text-sm text-green-200 mb-1">Electricity (kWh this month)</label>
+                    <input type="number" id="manual-kwh" class="glass-input w-full px-3 py-2">
+                </div>
+                <div>
+                    <label class="block text-sm text-green-200 mb-1">Flights (Domestic this year)</label>
+                    <input type="number" id="manual-flights" class="glass-input w-full px-3 py-2">
+                </div>
+                <div>
+                    <label class="block text-sm text-green-200 mb-1">AC Hours (Daily avg)</label>
+                    <input type="number" id="manual-ac" class="glass-input w-full px-3 py-2">
+                </div>
+                <div class="flex justify-end gap-3 mt-6">
+                    <button type="button" class="px-4 py-2 text-white/70 hover:text-white" onclick="closeManualEntry()">Cancel</button>
+                    <button type="submit" class="glass-btn px-6 py-2">Save (+10 XP)</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed top-6 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-6 py-3 rounded-full shadow-lg transition-all duration-300 opacity-0 -translate-y-full z-50 pointer-events-none font-medium">
+        Message
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>
